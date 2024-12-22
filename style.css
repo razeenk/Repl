@@ -1,0 +1,144 @@
+@font-face {
+    font-family: 'Optimist';
+    src: url('/assets/fonts/Optimist Normal.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+  background: rgb(36,45,64);
+  background: linear-gradient(
+    180deg,
+    rgba(36, 45, 64, 1) 0%, 
+    rgba(32, 47, 64, 1) 40%, 
+    rgba(30, 50, 64, 1) 70%, 
+    rgba(25, 45, 58, 1) 85%
+  );
+  background-repeat: no-repeat;
+  background-size: cover; 
+  height: 100%;
+  margin: 0;
+}
+#header{
+  height: 50px;
+  width: 100%;
+  background-color: C62E2E;
+  margin-top: 0;
+  padding-top: 0;
+  align-items: center;
+  align-content: center ;
+}
+.logo{
+  height:200px;
+  width:100%;
+  background-color: 362626;
+  align-content: center ;
+  justify-content: center;
+  display: flex;
+}
+.lang{
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  color: #BCC6D0;
+  font-family: Optimist;
+  font-size: 12px;
+  
+  
+}
+#logo{
+  width:50px;
+  height:50px;
+  align-self: center;
+ 
+}
+.inputs{
+  
+  width:100%;
+  height:170px;
+  align-content: center;
+  display: grid;
+  justify-content: center;
+  
+  
+  
+}
+.login{
+  width:320px;
+  height: 30px;
+  background: #1c2a33;
+  border: 1.5px;
+  border-color: #31424f;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color:white;
+  
+}
+.login::placeholder{
+  
+}
+.button{
+  background-color: #0064e0;
+  border: none;
+  height:35px;
+  border-radius: 30px;
+  color: white;
+  margin-top:2px;
+}
+.forget{
+  text-align: center;
+  color: white;
+  margin-top:10px;
+  font-size: 13px;
+  text-decoration: none;
+}
+.create-support{
+  width:100%;
+  height:220px;
+  background-color: grjey;
+}
+.create{
+  border: 1px solid #4a8ad0;
+  border-radius: 30px;
+  height: 40px;
+  color:#4a8ad0;
+  background-color: transparent;
+  width: 330px;
+  
+}
+#create{
+  width:100%;
+  height: 50px;
+  background-color: 19206E;
+  align-content: center;
+  display: grid;
+  justify-content: center;
+}
+.meta{
+  height: 30px;
+  width: 70px;
+}
+#meta{
+  
+  width: 100%;
+  display :grid;
+  justify-content: center ;
+}
+input::placeholder {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  transition: 0.3s ease all;
+  
+  color: #aaa;
+}
+
+/* Move the placeholder upward when focused */
+input:focus::placeholder {
+  transform: translateY(-150%);
+  font-size: 12px;
+  color: #BCC6D0;
+}

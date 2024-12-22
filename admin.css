@@ -1,0 +1,45 @@
+body {
+  background: rgb(36,45,64);
+  background: linear-gradient(
+    180deg,
+    rgba(36, 45, 64, 1) 0%, 
+    rgba(32, 47, 64, 1) 40%, 
+    rgba(30, 50, 64, 1) 70%, 
+    rgba(25, 45, 58, 1) 85%
+  );
+  background-repeat: no-repeat;
+  background-size: cover; 
+  height: 100vh;
+  margin: 0;
+}
+.login{
+  width:320px;
+  height: 30px;
+  background: #1c2a33;
+  border: 1.5px;
+  border-color: #31424f;
+  border-style: solid;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color:white;
+  
+}
+.login::placeholder{
+  
+}
+.button{
+  background-color: #0064e0;
+  border: none;
+  height:35px;
+  border-radius: 30px;
+  color: white;
+  margin-top:2px;
+  width: 95%;
+}
+body{
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  text-align: center ;
+}
