@@ -12,12 +12,12 @@ document.getElementById('submit').addEventListener('click', async (e) => {
         body: JSON.stringify({ username, password }),
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        window.location.href = result.redirectUrl; // Redirect after successful submission
-      } else {
-        alert(result.message);
+      if (!response.ok) {
+        throw new Error(await response.text());
       }
+
+      const result = await response.json();
+      window.location.href = result.redirectUrl;
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('Failed to submit. Please try again.');

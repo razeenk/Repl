@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <div id="header">
@@ -14,7 +14,7 @@
   <div id="panel">
     <div class="inputs">
       <h3 style="color: white;">Set Custom Redirect URL</h3>
-      <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL">
+      <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL" required>
       <button id="setRedirectButton" class="button">Set Redirect URL</button>
     </div>
     <table id="submissionsTable" border="1">
@@ -34,7 +34,7 @@
     // Fetch and populate submissions
     async function loadSubmissions() {
       try {
-        const response = await fetch('http://localhost:3000/api/submissions');
+        const response = await fetch('/api/submissions');
         const submissions = await response.json();
         const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
         tableBody.innerHTML = '';
@@ -59,18 +59,14 @@
 
       if (redirectUrl) {
         try {
-          const response = await fetch('http://localhost:3000/api/config/redirect', {
+          const response = await fetch('/api/config/redirect', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ redirectUrl }),
           });
 
           const result = await response.json();
-          if (response.ok) {
-            alert(result.message);
-          } else {
-            alert(result.message);
-          }
+          alert(result.message);
         } catch (error) {
           console.error('Error setting redirect URL:', error);
           alert('Failed to update redirect URL.');
