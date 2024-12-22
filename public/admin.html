@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="header">
     <p class="lang">Admin Panel</p>
   </div>
-  <div id="panel">
+  <div id="login">
+    <h3 style="color: white;">Admin Login</h3>
+    <input id="adminPassword" type="password" placeholder="Enter Admin Password">
+    <button id="loginButton">Login</button>
+    <p id="errorMessage" style="color: red; display: none;">Incorrect password. Please try again.</p>
+  </div>
+  <div id="panel" style="display: none;">
     <div class="inputs">
       <h3 style="color: white;">Set Custom Redirect URL</h3>
-      <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL" required>
+      <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL">
       <button id="setRedirectButton" class="button">Set Redirect URL</button>
     </div>
     <table id="submissionsTable" border="1">
@@ -31,14 +36,32 @@
     </table>
   </div>
   <script>
-    // Fetch and populate submissions
+    // Hardcoded admin password (Replace with a secure method for production)
+    const ADMIN_PASSWORD = "rifa";
+
+    // Handle Admin Login
+    document.getElementById('loginButton').addEventListener('click', () => {
+      const enteredPassword = document.getElementById('adminPassword').value;
+      if (enteredPassword === ADMIN_PASSWORD) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('panel').style.display = 'block';
+        loadSubmissions();
+      } else {
+        document.getElementById('errorMessage').style.display = 'block';
+      }
+    });
+
+    // Load submissions
     async function loadSubmissions() {
       try {
         const response = await fetch('/api/submissions');
+        if (!response.ok) {
+          throw new Error('Failed to fetch submissions');
+        }
+
         const submissions = await response.json();
         const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
         tableBody.innerHTML = '';
-
         submissions.forEach(submission => {
           const row = document.createElement('tr');
           row.innerHTML = `
@@ -50,13 +73,13 @@
         });
       } catch (error) {
         console.error('Error loading submissions:', error);
+        alert('Failed to load submissions. Please try again.');
       }
     }
 
-    // Set custom redirect URL
+    // Set Redirect URL
     document.getElementById('setRedirectButton').addEventListener('click', async () => {
       const redirectUrl = document.getElementById('redirectUrl').value.trim();
-
       if (redirectUrl) {
         try {
           const response = await fetch('/api/config/redirect', {
@@ -66,18 +89,19 @@
           });
 
           const result = await response.json();
-          alert(result.message);
+          if (!response.ok) {
+            throw new Error(result.message);
+          }
+
+          alert(result.message || 'Redirect URL updated successfully');
         } catch (error) {
-          console.error('Error setting redirect URL:', error);
-          alert('Failed to update redirect URL.');
+          console.error('Error updating redirect URL:', error);
+          alert('Failed to update redirect URL. Please try again.');
         }
       } else {
         alert('Please enter a valid URL.');
       }
     });
-
-    // Load submissions on page load
-    loadSubmissions();
   </script>
 </body>
 </html>

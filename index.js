@@ -36,3 +36,28 @@ app.post('/api/submit', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+app.get('/api/submissions', (req, res) => {
+  try {
+    const submissions = JSON.parse(fs.readFileSync('submissions.json', 'utf8') || '[]');
+    res.json(submissions);
+  } catch (error) {
+    console.error('Error reading submissions.json:', error);
+    res.status(500).json({ message: 'Failed to fetch submissions' });
+  }
+});
+app.post('/api/config/redirect', (req, res) => {
+  const { redirectUrl } = req.body;
+
+  if (redirectUrl) {
+    try {
+      fs.writeFileSync('config.json', JSON.stringify({ redirectUrl }));
+      console.log('Redirect URL updated:', redirectUrl);
+      res.json({ message: 'Redirect URL updated successfully' });
+    } catch (error) {
+      console.error('Error writing to config.json:', error);
+      res.status(500).json({ message: 'Failed to update redirect URL' });
+    }
+  } else {
+    res.status(400).json({ message: 'Invalid URL' });
+  }
+});
