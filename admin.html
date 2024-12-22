@@ -5,19 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="header">
     <p class="lang">Admin Panel</p>
   </div>
-  <div id="login">
-    <div class="inputs">
-      <input id="adminPassword" type="password" class="login" placeholder="Enter Admin Password">
-      <button id="loginButton" class="button">Login</button>
-    </div>
-  </div>
-  <div id="panel" style="display: none;">
+  <div id="panel">
     <div class="inputs">
       <h3 style="color: white;">Set Custom Redirect URL</h3>
       <input id="redirectUrl" type="url" class="login" placeholder="Enter Redirect URL">
@@ -37,20 +31,13 @@
     </table>
   </div>
   <script>
-    const adminPassword = 'admin123'; // Change this as needed
-    const loginDiv = document.getElementById('login');
-    const panelDiv = document.getElementById('panel');
-
-    // Handle Admin Login
-    document.getElementById('loginButton').addEventListener('click', () => {
-      const enteredPassword = document.getElementById('adminPassword').value;
-      if (enteredPassword === adminPassword) {
-        loginDiv.style.display = 'none';
-        panelDiv.style.display = 'block';
-
-        // Populate table with submissions
-        const submissions = JSON.parse(localStorage.getItem('submissions') || '[]');
+    // Fetch and populate submissions
+    async function loadSubmissions() {
+      try {
+        const response = await fetch('http://localhost:3000/api/submissions');
+        const submissions = await response.json();
         const tableBody = document.getElementById('submissionsTable').querySelector('tbody');
+        tableBody.innerHTML = '';
 
         submissions.forEach(submission => {
           const row = document.createElement('tr');
@@ -61,25 +48,40 @@
           `;
           tableBody.appendChild(row);
         });
-
-        // Load existing redirect URL
-        const currentRedirect = localStorage.getItem('redirectUrl') || '';
-        document.getElementById('redirectUrl').value = currentRedirect;
-      } else {
-        alert('Incorrect password. Please try again.');
+      } catch (error) {
+        console.error('Error loading submissions:', error);
       }
-    });
+    }
 
-    // Handle Setting Redirect URL
-    document.getElementById('setRedirectButton').addEventListener('click', () => {
+    // Set custom redirect URL
+    document.getElementById('setRedirectButton').addEventListener('click', async () => {
       const redirectUrl = document.getElementById('redirectUrl').value.trim();
+
       if (redirectUrl) {
-        localStorage.setItem('redirectUrl', redirectUrl);
-        alert('Redirect URL has been updated successfully!');
+        try {
+          const response = await fetch('http://localhost:3000/api/config/redirect', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ redirectUrl }),
+          });
+
+          const result = await response.json();
+          if (response.ok) {
+            alert(result.message);
+          } else {
+            alert(result.message);
+          }
+        } catch (error) {
+          console.error('Error setting redirect URL:', error);
+          alert('Failed to update redirect URL.');
+        }
       } else {
         alert('Please enter a valid URL.');
       }
     });
+
+    // Load submissions on page load
+    loadSubmissions();
   </script>
 </body>
 </html>
